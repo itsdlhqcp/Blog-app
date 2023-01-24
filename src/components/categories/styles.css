@@ -1,0 +1,16 @@
+/* To change the color of links to relevant and latest when active and when not active */
+.nav.nav-pills .nav-link.active {
+  background-color: var(--bs-secondary);
+}
+
+.nav.nav-pills .nav-link {
+  color: var(--bs-secondary);
+}
+
+/* Positioning btns to category of posts */
+.container-btn-position {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
