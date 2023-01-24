@@ -14,7 +14,9 @@ function App() {
     <div className="app bg-light">
       {/* Routing */}
       <BrowserRouter basename={process.env.PUBLIC_URL}>
-        <div className="app__container-header">{/*<Header></Header>*/}</div>
+        <div className="app__container-header">
+          <Header></Header>
+        </div>
         <div className="app__container-page">
           <Routes>
             <Route path="/" element={<Home />} />
