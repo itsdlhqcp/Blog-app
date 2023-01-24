@@ -1,15 +1,17 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import Header from "components/header";
 import Home from "pages/home";
 import Profile from "pages/profile";
 import NewPost from "pages/new";
 import Post from "pages/post";
 import Latest from "pages/latest";
 import ErrorPage from "pages/error-page";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "app.css";
 
 function App() {
   return (
-    <div className="App">
+    <div className="app bg-light">
       {/* Routing */}
       <BrowserRouter basename={process.env.PUBLIC_URL}>
         <div className="app__container-header">{/*<Header></Header>*/}</div>
