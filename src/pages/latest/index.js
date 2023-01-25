@@ -1,9 +1,11 @@
 import Categories from "components/categories";
+import List from "components/list/index";
 
 export default function Latest() {
   return (
     <div>
       <Categories></Categories>
+      {/* <List></List> */}
       <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus
         excepturi amet officia consequuntur voluptates repellat distinctio

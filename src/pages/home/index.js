@@ -1,9 +1,11 @@
 import Categories from "components/categories";
+import List from "components/list/index";
 
 export default function Home() {
   return (
     <div>
       <Categories></Categories>
+      {/* <List></List> */}
       <p>
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Provident,
         autem eligendi quod magni numquam nemo pariatur labore perspiciatis!
