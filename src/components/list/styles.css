@@ -1,0 +1,9 @@
+.lists.container {
+  max-width: 680px;
+}
+
+.diferent-size {
+  height: 40px;
+  width: 40px;
+  object-fit: cover;
+}
