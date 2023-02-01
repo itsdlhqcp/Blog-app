@@ -8,12 +8,13 @@ import Latest from "pages/latest";
 import ErrorPage from "pages/error-page";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "app.css";
+import { UserAuthContextProvider } from "context/user-auth-context";
 
 function App() {
   return (
     <div className="app bg-light">
-      {/* Routing */}
-      <BrowserRouter basename={process.env.PUBLIC_URL}>
+      <UserAuthContextProvider>
+        {/* Routing */}
         <div className="app__container-header">
           <Header></Header>
         </div>
@@ -27,7 +28,7 @@ function App() {
             <Route path="*" element={<ErrorPage />} />
           </Routes>
         </div>
-      </BrowserRouter>
+      </UserAuthContextProvider>
     </div>
   );
 }
