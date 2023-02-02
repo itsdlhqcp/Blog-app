@@ -11,44 +11,55 @@ function NavBarBootstrap({ handleAuth, handleLogOut, user }) {
 
   return (
     <>
-      {
-        <Navbar
-          bg="dark"
-          variant="dark"
-          expand="md"
-          className="sticky-top border-bottom border-2"
-        >
-          <Container>
-            <Navbar.Brand as={Link} to="/">
-              Blog
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-            <Navbar.Collapse id="responsive-navbar-nav">
-              <Nav
-                className="justify-content-end flex-grow-1 pe-3 align-items-center"
-                activeKey={
-                  currentUrl.pathname === "/latest" ? "/" : currentUrl.pathname
-                }
-              >
-                <Nav.Link as={Link} to="/" eventKey="/">
-                  Home
-                </Nav.Link>
-                <Nav.Link as={Link} to="/profile" eventKey="/profile">
-                  Profile
-                </Nav.Link>
-                <Nav.Link as={Link} to="/new" eventKey="/new">
-                  New Post
-                </Nav.Link>
-                <Nav.Item>
-                  <Button variant="outline-light" onClick={handleAuth}>
-                    Login
-                  </Button>
-                </Nav.Item>
-              </Nav>
-            </Navbar.Collapse>
-          </Container>
-        </Navbar>
-      }
+      <Navbar
+        bg="dark"
+        variant="dark"
+        expand="md"
+        className="sticky-top border-bottom border-2"
+      >
+        <Container>
+          <Navbar.Brand as={Link} to="/">
+            Blog
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav
+              className="justify-content-end flex-grow-1 pe-3 align-items-center"
+              activeKey={
+                currentUrl.pathname === "/latest" ? "/" : currentUrl.pathname
+              }
+            >
+              <Nav.Link as={Link} to="/" eventKey="/">
+                Home
+              </Nav.Link>
+
+              {user ? (
+                <>
+                  <Nav.Link as={Link} to="/profile" eventKey="/profile">
+                    Profile
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/new" eventKey="/new">
+                    New Post
+                  </Nav.Link>
+                  <Nav.Item>
+                    <Button variant="outline-light" onClick={handleLogOut}>
+                      LogOut
+                    </Button>
+                  </Nav.Item>
+                </>
+              ) : (
+                <>
+                  <Nav.Item>
+                    <Button variant="outline-light" onClick={handleAuth}>
+                      Login
+                    </Button>
+                  </Nav.Item>
+                </>
+              )}
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
     </>
   );
 }
