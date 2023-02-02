@@ -5,9 +5,8 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { useState } from "react";
 
-function NavBarBootstrap({ handleAuth }) {
+function NavBarBootstrap({ handleAuth, handleLogOut, user }) {
   const currentUrl = useLocation();
 
   return (
