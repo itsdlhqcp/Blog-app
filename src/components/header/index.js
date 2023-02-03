@@ -1,4 +1,6 @@
+import { useState } from "react";
 import NavBarBootstrap from "components/nav-bar";
+import ModalNotification from "components/modal-notification/index";
 import { useUserAuth } from "context/user-auth-context";
 import { useNavigate } from "react-router-dom";
 import {
@@ -10,6 +12,8 @@ import {
 export default function Header() {
   const { signInWithGoogle, logOut, user } = useUserAuth();
   const navigate = useNavigate();
+  const [showLoginModal, setShowLoginModal] = useState(false); // Login Modal
+  const [showLogoutModal, setShowLogoutModal] = useState(false); // LogOut Modal
 
   async function handleGoogleSignIn(e) {
     e.preventDefault();
@@ -57,6 +61,7 @@ export default function Header() {
         createUser(uid, newUser);
         navigate("/profile");
       }
+      setShowLoginModal(true);
     } catch (error) {
       console.log(error.message);
     }
@@ -66,13 +71,36 @@ export default function Header() {
     try {
       await logOut();
       navigate("/");
+      setShowLogoutModal(true);
     } catch (error) {
       console.log(error.message);
     }
   }
 
+  function handleCloseLogin() {
+    setShowLoginModal(false);
+  }
+
+  function handleCloseLogout() {
+    setShowLogoutModal(false);
+  }
+
   return (
     <div>
+      <ModalNotification
+        show={showLoginModal}
+        setShow={setShowLoginModal}
+        handleClose={handleCloseLogin}
+        modalTitle={"Welcome"}
+        modalText={`Logged in successfully`}
+      ></ModalNotification>
+      <ModalNotification
+        show={showLogoutModal}
+        setShow={setShowLogoutModal}
+        handleClose={handleCloseLogout}
+        modalTitle={"See you soon"}
+        modalText={`You have closed your account`}
+      ></ModalNotification>
       <NavBarBootstrap
         handleAuth={handleGoogleSignIn}
         handleLogOut={handleLogOut}
