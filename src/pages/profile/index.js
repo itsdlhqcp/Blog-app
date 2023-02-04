@@ -29,7 +29,7 @@ export default function Profile() {
   useEffect(() => {
     setTitle(user.username);
     setUsername(user.username);
-    setSrc((src) => user.photoURL);
+    setSrc(() => user.photoURL);
   }, [user]);
 
   useEffect(() => {
@@ -96,7 +96,7 @@ export default function Profile() {
       return;
     }
 
-    // Only img changed and defaultPhotoFromGoogleAccount of user
+    // Only img changed and photoURL of user
     if (
       usernameTakenUid &&
       usernameTakenUid === user.uid &&
@@ -109,7 +109,7 @@ export default function Profile() {
             updateUser(user.uid, {
               uid: user.uid,
               username: username,
-              defaultPhotoFromGoogleAccount: downloadURL,
+              photoURL: downloadURL,
             });
             setIsUpdated(true);
           });
@@ -132,7 +132,7 @@ export default function Profile() {
       await updateUser(user.uid, {
         uid: user.uid,
         username: username,
-        defaultPhotoFromGoogleAccount: user.defaultPhotoFromGoogleAccount,
+        photoURL: user.photoURL,
       });
       setIsUpdated(true);
       setIsDisabled(false);
@@ -152,7 +152,7 @@ export default function Profile() {
             updateUser(user.uid, {
               uid: user.uid,
               username: username,
-              defaultPhotoFromGoogleAccount: downloadURL,
+              photoURL: downloadURL,
             });
             setIsUpdated(true);
           });
