@@ -45,19 +45,16 @@ export async function getUserByUid(uid) {
 }
 
 export async function existUsername(username) {
-  try {
     const users = [];
+
     const docsRef = collection(db, "users");
     const q = query(docsRef, where("username", "==", username));
-    const querySnapshot = await getDocs(q);
 
+    const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       users.push(doc.data());
     });
     return users.length > 0 ? users[0].uid : false;
-  } catch (error) {
-    console.error(error);
-  }
 }
 
 export async function createUser(uid, user) {
@@ -76,7 +73,7 @@ export async function updateUser(uid, user) {
     const docref = doc(collectionRef, uid);
     setDoc(docref, user);
   } catch (error) {
-    console.error(error);
+    alert("hola");
   }
 }
 
