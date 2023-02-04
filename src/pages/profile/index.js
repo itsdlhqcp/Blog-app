@@ -3,6 +3,7 @@ import ProfileForm from "components/profile-form";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+import Alert from "react-bootstrap/Alert";
 import { useState, useEffect, useRef } from "react";
 import {
   setUserProfilePhoto,
@@ -22,6 +23,7 @@ export default function Profile() {
   const [src, setSrc] = useState(undefined);
   const inputRef = useRef();
   const [show, setShow] = useState(false); // Modal
+  const [error, setError] = useState("");
 
   useEffect(() => {
     setTitle(user.username);
@@ -40,7 +42,13 @@ export default function Profile() {
       setIsUpdated(false);
       if (inputRef.current) inputRef.current.value = null;
     }
-  }, [handleSubmit && isUpdated]);
+
+    if (error) {
+      setSrc(() => currenProfileImg);
+      setUsername(user.username);
+      if (inputRef.current) inputRef.current.value = null;
+    }
+  }, [handleSubmit && isUpdated, handleSubmit && error !== ""]);
 
   function handleClose() {
     setShow(false);
@@ -60,14 +68,30 @@ export default function Profile() {
   }
 
   async function handleSubmit(e) {
-    if (username === "") return;
+    e.preventDefault();
+    setIsDisabled(true);
+    setError("");
+    if (username === "") {
+      setError("Add a valid username");
+      setIsDisabled(false);
+      return;
+    }
     if (username === user.username && fileImg === undefined) {
       setIsDisabled(false);
       return;
     }
 
+    // Offline error
+    if (!navigator.onLine) {
+      setError("Something wrong, check your network connection");
+      setIsDisabled(false);
+      return;
+    }
+
     const usernameTakenUid = await existUsername(username);
+
     if (usernameTakenUid && usernameTakenUid !== user.uid) {
+      setError("The username is taken");
       setIsDisabled(false);
       return;
     }
@@ -79,15 +103,22 @@ export default function Profile() {
       fileImg !== undefined
     ) {
       setUserProfilePhoto(user.uid, fileImg);
-      updateUser(user.uid, {
-        uid: user.uid,
-        username: username,
+            updateUser(user.uid, {
+              uid: user.uid,
+              username: username,
         defaultPhotoFromGoogleAccount:
           user.defaultPhotoFromGoogleAccount === false
             ? user.defaultPhotoFromGoogleAccount
             : false,
+            });
+            setIsUpdated(true);
+          });
+        } else {
+          setError(
+            "Something wrong, the image must be less than 1mb and must be png, svg or jpg"
+          );
+        }
       });
-      setIsUpdated(true);
       setIsDisabled(false);
       return;
     }
@@ -98,7 +129,7 @@ export default function Profile() {
       usernameTakenUid !== user.uid &&
       fileImg === undefined
     ) {
-      updateUser(user.uid, {
+      await updateUser(user.uid, {
         uid: user.uid,
         username: username,
         defaultPhotoFromGoogleAccount: user.defaultPhotoFromGoogleAccount,
@@ -115,16 +146,22 @@ export default function Profile() {
       fileImg !== undefined
     ) {
       setUserProfilePhoto(user.uid, fileImg);
-      updateUser(user.uid, {
-        uid: user.uid,
-        username: username,
+            updateUser(user.uid, {
+              uid: user.uid,
+              username: username,
         defaultPhotoFromGoogleAccount:
           user.defaultPhotoFromGoogleAccount === false
             ? user.defaultPhotoFromGoogleAccount
             : false,
+            });
+            setIsUpdated(true);
+          });
+        } else {
+          setError(
+            "Something wrong, the image must be less than 1mb and must be png, svg or jpg"
+          );
+        }
       });
-
-      setIsUpdated(true);
       setIsDisabled(false);
       return;
     }
@@ -162,6 +199,7 @@ export default function Profile() {
                 ></ProfileForm>
               </Col>
             </Row>
+            {error && <Alert variant="danger">{error}</Alert>}
           </Container>
         </>
       )}
