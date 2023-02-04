@@ -1,9 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import {
-  auth,
-  getUserByUid,
-  downloadUserProfilePhoto,
-} from "services/firebase/firebase";
+import { auth, getUserByUid } from "services/firebase/firebase";
 
 import {
   onAuthStateChanged,
@@ -16,22 +12,10 @@ const userAuthContext = createContext();
 
 export function UserAuthContextProvider({ children }) {
   const [user, setUser] = useState({});
-  const [currenProfileImg, setCurrenProfileImg] = useState(false);
 
   async function fetchUserData(uid) {
     try {
       const userData = await getUserByUid(uid);
-      if (userData.defaultPhotoFromGoogleAccount === false) {
-        try {
-          const url = await downloadUserProfilePhoto(uid);
-          setCurrenProfileImg(url);
-          setUser(userData);
-        } catch (error) {
-          console.error(error);
-          return;
-        }
-      } else if (userData.defaultPhotoFromGoogleAccount !== false)
-        setCurrenProfileImg(userData.defaultPhotoFromGoogleAccount);
       setUser(userData);
     } catch (error) {
       console.error(error);
@@ -68,7 +52,6 @@ export function UserAuthContextProvider({ children }) {
         user,
         logOut,
         signInWithGoogle,
-        currenProfileImg,
         fetchUserData,
       }}
     >
