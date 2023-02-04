@@ -9,11 +9,12 @@ import {
   setUserProfilePhoto,
   existUsername,
   updateUser,
+  downloadUserProfilePhoto,
 } from "services/firebase/firebase";
 import ModalNotification from "components/modal-notification/index";
 
 export default function Profile() {
-  const { user, currenProfileImg, fetchUserData } = useUserAuth();
+  const { user, fetchUserData } = useUserAuth();
 
   const [isDisabled, setIsDisabled] = useState(false); // To avoid to make too request
   const [fileImg, SetFileImg] = useState(undefined);
@@ -28,9 +29,8 @@ export default function Profile() {
   useEffect(() => {
     setTitle(user.username);
     setUsername(user.username);
-    // if src is true, then it has an image src and doesn't need to get the currenProfileImg because currenProfileImg will be updated to current src
-    setSrc((src) => (src ? src : currenProfileImg));
-  }, [user, currenProfileImg]);
+    setSrc((src) => user.photoURL);
+  }, [user]);
 
   useEffect(() => {
     if (isUpdated) {
@@ -44,7 +44,7 @@ export default function Profile() {
     }
 
     if (error) {
-      setSrc(() => currenProfileImg);
+      setSrc(() => user.photoURL);
       setUsername(user.username);
       if (inputRef.current) inputRef.current.value = null;
     }
@@ -96,20 +96,20 @@ export default function Profile() {
       return;
     }
 
-    // Only img changed and maybe defaultPhotoFromGoogleAccount to false
+    // Only img changed and defaultPhotoFromGoogleAccount of user
     if (
       usernameTakenUid &&
       usernameTakenUid === user.uid &&
       fileImg !== undefined
     ) {
-      setUserProfilePhoto(user.uid, fileImg);
+      await setUserProfilePhoto(user.uid, fileImg).then((res) => {
+        if (res) {
+          downloadUserProfilePhoto(user.uid).then((downloadURL) => {
+            console.log("File available at", downloadURL);
             updateUser(user.uid, {
               uid: user.uid,
               username: username,
-        defaultPhotoFromGoogleAccount:
-          user.defaultPhotoFromGoogleAccount === false
-            ? user.defaultPhotoFromGoogleAccount
-            : false,
+              defaultPhotoFromGoogleAccount: downloadURL,
             });
             setIsUpdated(true);
           });
@@ -145,14 +145,14 @@ export default function Profile() {
       usernameTakenUid !== user.uid &&
       fileImg !== undefined
     ) {
-      setUserProfilePhoto(user.uid, fileImg);
+      await setUserProfilePhoto(user.uid, fileImg).then((res) => {
+        if (res) {
+          downloadUserProfilePhoto(user.uid).then((downloadURL) => {
+            console.log("File available at", downloadURL);
             updateUser(user.uid, {
               uid: user.uid,
               username: username,
-        defaultPhotoFromGoogleAccount:
-          user.defaultPhotoFromGoogleAccount === false
-            ? user.defaultPhotoFromGoogleAccount
-            : false,
+              defaultPhotoFromGoogleAccount: downloadURL,
             });
             setIsUpdated(true);
           });
