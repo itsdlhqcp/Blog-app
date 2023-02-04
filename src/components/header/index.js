@@ -25,7 +25,7 @@ export default function Header() {
         userCredential.user.photoURL
       );
       const uid = userCredential.user.uid;
-      const defaultPhotoFromGoogleAccount = userCredential.user.photoURL;
+      const photoURL = userCredential.user.photoURL;
       const username = userCredential.user.displayName;
 
       const userData = await getUserByUid(uid);
@@ -49,13 +49,13 @@ export default function Header() {
           newUser = {
             uid: uid,
             username: tempUsername,
-            defaultPhotoFromGoogleAccount: defaultPhotoFromGoogleAccount,
+            photoURL: photoURL,
           };
         } else {
           newUser = {
             uid: uid,
             username: username,
-            defaultPhotoFromGoogleAccount: defaultPhotoFromGoogleAccount,
+            photoURL: photoURL,
           };
         }
         createUser(uid, newUser);
