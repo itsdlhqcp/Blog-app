@@ -1,3 +1,8 @@
 .user-form.container {
   max-width: 680px;
 }
+
+.p-0.m-0.position-relative.container-imgProfileSrc {
+  width: 40px;
+  height: 40px;
+}

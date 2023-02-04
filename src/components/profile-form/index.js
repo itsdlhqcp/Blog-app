@@ -42,10 +42,7 @@ export default function ProfileForm({
       </Row>
       <Row xs={2} sm={2}>
         <Col className="my-auto" sm="auto" xs="auto">
-          <div
-            style={{ width: "40px", height: "40px" }} /* STYLE */
-            className="p-0 m-0 position-relative"
-          >
+          <div className="p-0 m-0 position-relative container-imgProfileSrc">
             <Image
               src={imgProfileSrc}
               roundedCircle
