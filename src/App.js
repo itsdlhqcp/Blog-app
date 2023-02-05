@@ -9,6 +9,7 @@ import ErrorPage from "pages/error-page";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "app.css";
 import { UserAuthContextProvider } from "context/user-auth-context";
+import ProtectedRoute from "components/protected-route";
 
 function App() {
   return (
@@ -21,8 +22,22 @@ function App() {
         <div className="app__container-page">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/new" element={<NewPost />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/new"
+              element={
+                <ProtectedRoute>
+                  <NewPost />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/latest" element={<Latest />} />
             <Route path="/post/:id" element={<Post />} />
             <Route path="*" element={<ErrorPage />} />
