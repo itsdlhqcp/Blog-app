@@ -8,6 +8,13 @@ import { useLocation } from "react-router-dom";
 
 function NavBarBootstrap({ handleAuth, handleLogOut, user }) {
   const currentUrl = useLocation();
+  const isObjectEmpty = (objectName) => {
+    return (
+      objectName &&
+      Object.keys(objectName).length === 0 &&
+      objectName.constructor === Object
+    );
+  };
 
   return (
     <>
@@ -29,12 +36,13 @@ function NavBarBootstrap({ handleAuth, handleLogOut, user }) {
                 currentUrl.pathname === "/latest" ? "/" : currentUrl.pathname
               }
             >
-              <Nav.Link as={Link} to="/" eventKey="/">
-                Home
-              </Nav.Link>
-
-              {user ? (
+              {isObjectEmpty(user) ? (
+                <div></div>
+              ) : user ? (
                 <>
+                  <Nav.Link as={Link} to="/" eventKey="/">
+                    Home
+                  </Nav.Link>
                   <Nav.Link as={Link} to="/profile" eventKey="/profile">
                     Profile
                   </Nav.Link>
@@ -49,6 +57,9 @@ function NavBarBootstrap({ handleAuth, handleLogOut, user }) {
                 </>
               ) : (
                 <>
+                  <Nav.Link as={Link} to="/" eventKey="/">
+                    Home
+                  </Nav.Link>
                   <Nav.Item>
                     <Button variant="outline-light" onClick={handleAuth}>
                       Login
