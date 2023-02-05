@@ -10,7 +10,7 @@ import {
 } from "services/firebase/firebase";
 
 export default function Header() {
-  const { signInWithGoogle, logOut, user } = useUserAuth();
+  const { signInWithGoogle, logOut, user, fetchUserData } = useUserAuth();
   const navigate = useNavigate();
   const [showLoginModal, setShowLoginModal] = useState(false); // Login Modal
   const [showLogoutModal, setShowLogoutModal] = useState(false); // LogOut Modal
@@ -58,8 +58,14 @@ export default function Header() {
             photoURL: photoURL,
           };
         }
-        createUser(uid, newUser);
-        navigate("/profile");
+
+        try {
+          await createUser(uid, newUser);
+          await fetchUserData(uid);
+          navigate("/profile");
+        } catch (error) {
+          alert(error.message);
+        }
       }
       setShowLoginModal(true);
     } catch (error) {

@@ -45,23 +45,24 @@ export async function getUserByUid(uid) {
 }
 
 export async function existUsername(username) {
-    const users = [];
+  const users = [];
 
-    const docsRef = collection(db, "users");
-    const q = query(docsRef, where("username", "==", username));
+  const docsRef = collection(db, "users");
+  const q = query(docsRef, where("username", "==", username));
 
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      users.push(doc.data());
-    });
-    return users.length > 0 ? users[0].uid : false;
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    users.push(doc.data());
+  });
+  return users.length > 0 ? users[0].uid : false;
 }
 
 export async function createUser(uid, user) {
   try {
     const collectionRef = collection(db, "users");
     const docref = doc(collectionRef, uid);
-    setDoc(docref, user);
+    const res = await setDoc(docref, user).then();
+    return res;
   } catch (error) {
     console.error(error);
   }
