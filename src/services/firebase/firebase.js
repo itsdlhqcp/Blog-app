@@ -61,7 +61,7 @@ export async function createUser(uid, user) {
   try {
     const collectionRef = collection(db, "users");
     const docref = doc(collectionRef, uid);
-    const res = await setDoc(docref, user).then();
+    const res = await setDoc(docref, user);
     return res;
   } catch (error) {
     console.error(error);
