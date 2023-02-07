@@ -98,3 +98,31 @@ export async function downloadUserProfilePhoto(id) {
     console.error(error);
   }
 }
+
+// Functions to posts
+export async function getPostById(id) {
+  try {
+    const collectionRef = collection(db, "posts");
+    const docRef = doc(collectionRef, id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const doc = docSnap.data();
+      return doc;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function createPost(id, post) {
+  try {
+    const collectionRef = collection(db, "posts");
+    const docRef = doc(collectionRef, id);
+    const res = await setDoc(docRef, post);
+    return res;
+  } catch (error) {
+    console.error(error);
+  }
+}
