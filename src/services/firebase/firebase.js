@@ -126,3 +126,24 @@ export async function createPost(id, post) {
     console.error(error);
   }
 }
+
+export async function setPostPhoto(id, file) {
+  try {
+    const postPhotoRef = ref(storage, `images/posts/${id}`);
+    const resUpload = await uploadBytes(postPhotoRef, file);
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+export async function downloadPostPhoto(id) {
+  try {
+    const postPhotoRef = ref(storage, `images/posts/${id}`);
+    const resDownload = await getDownloadURL(postPhotoRef);
+    return resDownload;
+  } catch (error) {
+    console.error(error);
+  }
+}
