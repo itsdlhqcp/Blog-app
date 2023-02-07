@@ -1,0 +1,19 @@
+.container-title-textarea {
+  overflow: scroll;
+  height: 400px;
+}
+
+.p-0.m-0.position-relative.container-imgProfileSrc {
+  width: 200px;
+  height: 200px;
+}
+
+.form-control.textarea-post-from {
+  resize: none;
+  overflow: hidden;
+}
+.imgProfile-post {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
