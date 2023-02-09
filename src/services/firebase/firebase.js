@@ -148,6 +148,19 @@ export async function downloadPostPhoto(id) {
   }
 }
 
+export async function getPosts() {
+  try {
+    const posts = [];
+    const querySnapshot = await getDocs(collection(db, "posts"));
+    querySnapshot.forEach((doc) => {
+      posts.push(doc.data());
+    });
+    return posts;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 /* Functions to update public/listUsernameAndPhotoURL doc */
 export async function updateListUsernameAndPhotoURL(listUsernameAndPhotoURL) {
   try {
