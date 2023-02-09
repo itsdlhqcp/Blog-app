@@ -13,13 +13,13 @@ function ListItem(props) {
           <Col className="p-0 m-0" sm="auto" xs="auto">
             <Image
               className="diferent-size"
-              src={props.postData.img}
+              src={props.postData.photoURL}
               alt="user icon"
               roundedCircle
             ></Image>
           </Col>
           <Col className="my-auto">
-            <p className="my-0">{props.postData.author}</p>
+            <p className="my-0">{props.postData.username}</p>
           </Col>
         </Row>
         <Row className="ms-2">
@@ -41,7 +41,7 @@ function ListItem(props) {
           </Col>
         </Row>
         <Link
-          to={"/post/" + props.postData.uid}
+          to={"/post/" + props.postData.id}
           // To make this Container clickeable without change the style of Container
           /*           
               These styles make the same
@@ -59,11 +59,11 @@ function ListItem(props) {
   );
 }
 
-export default function List(List) {
+export default function List({ list }) {
   return (
     <Container className="lists">
-      {List.map((post) => {
-        return <ListItem key={post.uid} postData={post}></ListItem>;
+      {list.map((post) => {
+        return <ListItem key={post.id} postData={post}></ListItem>;
       })}
     </Container>
   );
