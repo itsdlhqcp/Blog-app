@@ -7,6 +7,8 @@ import {
   getUserByUid,
   existUsername,
   createUser,
+  getListUsernameAndPhotoURL,
+  updateListUsernameAndPhotoURL,
 } from "services/firebase/firebase";
 
 export default function Header() {
@@ -60,6 +62,13 @@ export default function Header() {
         }
 
         try {
+          // Add user to public data username and photoURL
+          let listUsernameAndPhotoURL = await getListUsernameAndPhotoURL();
+          listUsernameAndPhotoURL[newUser.uid] = {
+            username: newUser.username,
+            photoURL: newUser.photoURL,
+          };
+          await updateListUsernameAndPhotoURL(listUsernameAndPhotoURL);
           await createUser(uid, newUser);
           await fetchUserData(uid);
           navigate("/profile");
