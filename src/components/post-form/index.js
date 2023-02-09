@@ -52,7 +52,7 @@ export default function PostForm({
           </Form.Group>
           <Row xs={1} sm={1}>
             <Col className="my-auto mx-auto" sm="auto" xs="auto">
-              <div className="p-0 m-0 position-relative container-imgProfileSrc">
+              <div className="p-0 m-0 position-relative post-form-container-imgProfileSrc">
                 <Image
                   className="imgProfile-post"
                   src={srcImg ? srcImg : ""}
