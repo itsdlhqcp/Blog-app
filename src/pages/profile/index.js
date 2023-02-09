@@ -10,6 +10,8 @@ import {
   existUsername,
   updateUser,
   downloadUserProfilePhoto,
+  getListUsernameAndPhotoURL,
+  updateListUsernameAndPhotoURL,
 } from "services/firebase/firebase";
 import ModalNotification from "components/modal-notification/index";
 
@@ -25,11 +27,20 @@ export default function Profile() {
   const inputRef = useRef();
   const [show, setShow] = useState(false); // Modal
   const [error, setError] = useState("");
+  const [listUsernameAndPhotoURL, setListUsernameAndPhotoURL] = useState(false);
 
   useEffect(() => {
+    console.log(user);
     setTitle(user.username);
     setUsername(user.username);
-    setSrc(() => user.photoURL);
+    setSrc(user.photoURL);
+    console.log(src);
+    getListUsernameAndPhotoURL()
+      .then((res) => {
+        setListUsernameAndPhotoURL(res);
+        console.log(res);
+      })
+      .catch(() => setError("Something wrong, please refresh the page"));
   }, [user]);
 
   useEffect(() => {
@@ -111,6 +122,13 @@ export default function Profile() {
               username: username,
               photoURL: downloadURL,
             });
+            updateListUsernameAndPhotoURL({
+              ...listUsernameAndPhotoURL,
+              [user.uid]: {
+                username: username,
+                photoURL: downloadURL,
+              },
+            });
             setIsUpdated(true);
           });
         } else {
@@ -134,6 +152,14 @@ export default function Profile() {
         username: username,
         photoURL: user.photoURL,
       });
+
+      await updateListUsernameAndPhotoURL({
+        ...listUsernameAndPhotoURL,
+        [user.uid]: {
+          username: username,
+          photoURL: user.photoURL,
+        },
+      });
       setIsUpdated(true);
       setIsDisabled(false);
       return;
@@ -154,6 +180,14 @@ export default function Profile() {
               username: username,
               photoURL: downloadURL,
             });
+
+            updateListUsernameAndPhotoURL({
+              ...listUsernameAndPhotoURL,
+              [user.uid]: {
+                username: username,
+                photoURL: downloadURL,
+              },
+            });
             setIsUpdated(true);
           });
         } else {
@@ -169,7 +203,10 @@ export default function Profile() {
 
   return (
     <div>
-      {username === undefined || src === undefined || title === undefined ? (
+      {username === undefined ||
+      src === undefined ||
+      title === undefined ||
+      listUsernameAndPhotoURL === false ? (
         <div>Loading</div>
       ) : (
         <>
