@@ -147,3 +147,32 @@ export async function downloadPostPhoto(id) {
     console.error(error);
   }
 }
+
+/* Functions to update public/listUsernameAndPhotoURL doc */
+export async function updateListUsernameAndPhotoURL(listUsernameAndPhotoURL) {
+  try {
+    const collectionRef = collection(db, "public");
+    const docRef = doc(collectionRef, "listUsernameAndPhotoURL");
+    const res = await setDoc(docRef, listUsernameAndPhotoURL);
+    return res;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function getListUsernameAndPhotoURL() {
+  try {
+    const collectionRef = collection(db, "public");
+    const docRef = doc(collectionRef, "listUsernameAndPhotoURL");
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const doc = docSnap.data();
+      return doc;
+    } else {
+      console.log("hola");
+      return {};
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
