@@ -101,7 +101,7 @@ export default function NewPost() {
       setPostPhoto(newPost.id, fileImg).then((res) => {
         if (res) {
           downloadPostPhoto(newPost.id).then((downloadURL) => {
-            newPost.src = downloadURL;
+            newPost.img = downloadURL;
             createPost(newPost.id, newPost)
               .then(() => setShow(true))
               .catch(() => setError("Something wrong, try again"));
