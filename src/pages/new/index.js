@@ -81,7 +81,7 @@ export default function NewPost() {
       return;
     }
 
-    const postDate = new Date();
+    const postDate = new Date().toString();
     const id = uniqid();
     let newPost = {
       id: id,
