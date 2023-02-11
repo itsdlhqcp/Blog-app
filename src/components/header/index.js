@@ -6,9 +6,7 @@ import { useNavigate } from "react-router-dom";
 import {
   getUserByUid,
   existUsername,
-  createUser,
-  getListUsernameAndPhotoURL,
-  updateListUsernameAndPhotoURL,
+  createUserAllData,
 } from "services/firebase/firebase";
 
 export default function Header() {
@@ -62,18 +60,12 @@ export default function Header() {
         }
 
         try {
-          // Add user to public data username and photoURL
-          let listUsernameAndPhotoURL = await getListUsernameAndPhotoURL();
-          listUsernameAndPhotoURL[newUser.uid] = {
-            username: newUser.username,
-            photoURL: newUser.photoURL,
-          };
-          await updateListUsernameAndPhotoURL(listUsernameAndPhotoURL);
-          await createUser(uid, newUser);
+          await createUserAllData(uid, newUser);
           await fetchUserData(uid);
           navigate("/profile");
         } catch (error) {
           alert(error.message);
+          return;
         }
       }
       setShowLoginModal(true);
