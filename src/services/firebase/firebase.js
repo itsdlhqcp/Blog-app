@@ -224,3 +224,33 @@ export async function createUserAllData(userUid, user) {
     console.error(error.message);
   }
 }
+
+// Batched firestore Function to update realted user docs
+export async function updateUserAllData(userUid, user) {
+  try {
+    // Get a new write batch
+    const batch = writeBatch(db);
+
+    // create a new user doc
+    const userRef = doc(db, "users", userUid);
+    batch.set(userRef, user);
+
+    // Update public/listUsernameAndPhotoURL doc
+    const listUsernameAndPhotoURLRef = doc(
+      db,
+      "public",
+      "listUsernameAndPhotoURL"
+    );
+    batch.update(listUsernameAndPhotoURLRef, {
+      [userUid]: {
+        username: user.username,
+        photoURL: user.photoURL,
+      },
+    });
+
+    // Commit the batch
+    await batch.commit();
+  } catch (error) {
+    console.error(error.message);
+  }
+}
