@@ -8,10 +8,8 @@ import { useState, useEffect, useRef } from "react";
 import {
   setUserProfilePhoto,
   existUsername,
-  updateUser,
   downloadUserProfilePhoto,
-  getListUsernameAndPhotoURL,
-  updateListUsernameAndPhotoURL,
+  updateUserAllData,
 } from "services/firebase/firebase";
 import ModalNotification from "components/modal-notification/index";
 
@@ -27,20 +25,12 @@ export default function Profile() {
   const inputRef = useRef();
   const [show, setShow] = useState(false); // Modal
   const [error, setError] = useState("");
-  const [listUsernameAndPhotoURL, setListUsernameAndPhotoURL] = useState(false);
 
   useEffect(() => {
     console.log(user);
     setTitle(user.username);
     setUsername(user.username);
     setSrc(user.photoURL);
-    console.log(src);
-    getListUsernameAndPhotoURL()
-      .then((res) => {
-        setListUsernameAndPhotoURL(res);
-        console.log(res);
-      })
-      .catch(() => setError("Something wrong, please refresh the page"));
   }, [user]);
 
   useEffect(() => {
@@ -115,22 +105,22 @@ export default function Profile() {
     ) {
       await setUserProfilePhoto(user.uid, fileImg).then((res) => {
         if (res) {
-          downloadUserProfilePhoto(user.uid).then((downloadURL) => {
-            console.log("File available at", downloadURL);
-            updateUser(user.uid, {
-              uid: user.uid,
-              username: username,
-              photoURL: downloadURL,
-            });
-            updateListUsernameAndPhotoURL({
-              ...listUsernameAndPhotoURL,
-              [user.uid]: {
+          downloadUserProfilePhoto(user.uid)
+            .then((downloadURL) => {
+              console.log("File available at", downloadURL);
+              updateUserAllData(user.uid, {
+                uid: user.uid,
                 username: username,
                 photoURL: downloadURL,
-              },
+              })
+                .then(() => {
+                  setIsUpdated(true);
+                })
+                .catch(() => setError("Someghing wrong, try again"));
+            })
+            .catch(() => {
+              setError("Someghing wrong, try again");
             });
-            setIsUpdated(true);
-          });
         } else {
           setError(
             "Something wrong, the image must be less than 1mb and must be png, svg or jpg"
@@ -147,22 +137,21 @@ export default function Profile() {
       usernameTakenUid !== user.uid &&
       fileImg === undefined
     ) {
-      await updateUser(user.uid, {
-        uid: user.uid,
-        username: username,
-        photoURL: user.photoURL,
-      });
-
-      await updateListUsernameAndPhotoURL({
-        ...listUsernameAndPhotoURL,
-        [user.uid]: {
+      try {
+        await updateUserAllData(user.uid, {
+          uid: user.uid,
           username: username,
           photoURL: user.photoURL,
-        },
-      });
-      setIsUpdated(true);
-      setIsDisabled(false);
-      return;
+        });
+        setIsUpdated(true);
+        setIsDisabled(false);
+        return;
+      } catch (error) {
+        setIsDisabled(false);
+        console.error(error.message);
+        setError("Someghing wrong, try again");
+        return;
+      }
     }
 
     // Both changed
@@ -173,23 +162,21 @@ export default function Profile() {
     ) {
       await setUserProfilePhoto(user.uid, fileImg).then((res) => {
         if (res) {
-          downloadUserProfilePhoto(user.uid).then((downloadURL) => {
-            console.log("File available at", downloadURL);
-            updateUser(user.uid, {
-              uid: user.uid,
-              username: username,
-              photoURL: downloadURL,
-            });
-
-            updateListUsernameAndPhotoURL({
-              ...listUsernameAndPhotoURL,
-              [user.uid]: {
+          downloadUserProfilePhoto(user.uid)
+            .then((downloadURL) => {
+              updateUserAllData(user.uid, {
+                uid: user.uid,
                 username: username,
                 photoURL: downloadURL,
-              },
+              })
+                .then(() => {
+                  setIsUpdated(true);
+                })
+                .catch(() => setError("Someghing wrong, try again"));
+            })
+            .catch(() => {
+              setError("Someghing wrong, try again");
             });
-            setIsUpdated(true);
-          });
         } else {
           setError(
             "Something wrong, the image must be less than 1mb and must be png, svg or jpg"
@@ -203,10 +190,7 @@ export default function Profile() {
 
   return (
     <div>
-      {username === undefined ||
-      src === undefined ||
-      title === undefined ||
-      listUsernameAndPhotoURL === false ? (
+      {username === undefined || src === undefined || title === undefined ? (
         <div>Loading</div>
       ) : (
         <>
