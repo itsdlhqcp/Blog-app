@@ -19,6 +19,7 @@ import {
   where,
   setDoc,
   deleteDoc,
+  writeBatch,
 } from "firebase/firestore";
 
 // Initialize Firebase
@@ -187,5 +188,39 @@ export async function getListUsernameAndPhotoURL() {
     }
   } catch (error) {
     console.error(error);
+  }
+}
+
+// Batched firestore Function to create all necessary user data
+export async function createUserAllData(userUid, user) {
+  try {
+    // Get a new write batch
+    const batch = writeBatch(db);
+
+    // create a new user doc
+    const userRef = doc(db, "users", userUid);
+    batch.set(userRef, user);
+
+    // Update public/listUsernameAndPhotoURL doc
+    const listUsernameAndPhotoURLRef = doc(
+      db,
+      "public",
+      "listUsernameAndPhotoURL"
+    );
+    batch.update(listUsernameAndPhotoURLRef, {
+      [userUid]: {
+        username: user.username,
+        photoURL: user.photoURL,
+      },
+    });
+
+    // create a new user liked posts doc
+    const userLikedPostsRef = doc(db, "user-liked-posts", userUid);
+    batch.set(userLikedPostsRef, {});
+
+    // Commit the batch
+    await batch.commit();
+  } catch (error) {
+    console.error(error.message);
   }
 }
