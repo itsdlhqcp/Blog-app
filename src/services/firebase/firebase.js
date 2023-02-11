@@ -254,3 +254,28 @@ export async function updateUserAllData(userUid, user) {
     console.error(error.message);
   }
 }
+
+// Batched firestore Function to add all related post data when user create a post
+export async function createPostAllData(postId, post) {
+  try {
+    // Get a new write batch
+    const batch = writeBatch(db);
+
+    // Set the post-like-list of selected post
+    const postLikesRef = doc(db, "post-like-list", postId);
+    batch.set(postLikesRef, {});
+
+    // Update the count with the selected post
+    const countRef = doc(db, "post-like-list", "count");
+    batch.update(countRef, { [postId]: 0 });
+
+    // Create new post doc in posts collection
+    const postRef = doc(db, "posts", postId);
+    batch.set(postRef, post);
+
+    // Commit the batch
+    await batch.commit();
+  } catch (error) {
+    console.error(error.message);
+  }
+}
