@@ -183,7 +183,16 @@ export async function getListUsernameAndPhotoURL() {
       const doc = docSnap.data();
       return doc;
     } else {
-      console.log("hola");
+/* Functions to handle likes */
+export async function getCount() {
+  try {
+    const collectionRef = collection(db, "post-like-list");
+    const docRef = doc(collectionRef, "count");
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const doc = docSnap.data();
+      return doc;
+    } else {
       return {};
     }
   } catch (error) {
