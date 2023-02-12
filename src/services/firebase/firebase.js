@@ -202,6 +202,21 @@ export async function getCount() {
   }
 }
 
+export async function getUserLikes(userUid) {
+  try {
+    const collectionRef = collection(db, "user-liked-posts");
+    const docRef = doc(collectionRef, userUid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const doc = docSnap.data();
+      return doc;
+    } else {
+      return {};
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
 // Batched firestore Function to create all necessary user data
 export async function createUserAllData(userUid, user) {
   try {
@@ -242,7 +257,7 @@ export async function updateUserAllData(userUid, user) {
     // Get a new write batch
     const batch = writeBatch(db);
 
-    // create a new user doc
+    // Update user doc
     const userRef = doc(db, "users", userUid);
     batch.set(userRef, user);
 
