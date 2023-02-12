@@ -120,7 +120,12 @@ export default function Post() {
               undefined,
               optionsLongDate
             );
-
+            let finalPost = {
+              ...postData,
+              username: listUsersData[postData.authorUid].username,
+              photoURL: listUsersData[postData.authorUid].photoURL,
+              date: longDate,
+            };
             console.log(finalPost);
             // set post with definitve data to render
             setPost(finalPost);
