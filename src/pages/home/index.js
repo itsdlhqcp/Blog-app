@@ -3,6 +3,7 @@ import List from "components/list/index";
 import {
   getPosts,
   getUserByUid,
+  getCount,
   getListUsernameAndPhotoURL,
 } from "services/firebase/firebase";
 import { useEffect, useState } from "react";
@@ -27,6 +28,7 @@ export default function Home() {
         const listUsersData = await getListUsernameAndPhotoURL();
 
         // Get doc with count of likes of all posts
+        const count = await getCount();
 
         // Get posts
         const postsData = await getPosts();
@@ -41,6 +43,7 @@ export default function Home() {
             username: listUsersData[post.authorUid].username,
             photoURL: listUsersData[post.authorUid].photoURL,
             date: date.toLocaleDateString(undefined, options),
+            likes: count[post.id],
           };
         });
 
