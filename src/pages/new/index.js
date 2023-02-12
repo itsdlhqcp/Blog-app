@@ -90,8 +90,6 @@ export default function NewPost() {
       img: srcImg,
       authorUid: user.uid,
       date: postDate,
-      likes: 0,
-      comments: 0,
     };
     if (fileImg === undefined) {
       try {
