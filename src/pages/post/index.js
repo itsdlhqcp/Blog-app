@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import {
   getListUsernameAndPhotoURL,
   getPostById,
+  getCount,
+  getUserLikes,
+  updateLikesData,
 } from "services/firebase/firebase";
 import { Navigate } from "react-router-dom";
 import Row from "react-bootstrap/Row";
@@ -19,16 +22,28 @@ export default function Post() {
   const [liked, setLiked] = useState(undefined);
   const [likesCount, setLikesCount] = useState(false);
 
+  const postId = useParams().id;
+  const isObjectEmpty = (objectName) => {
+    return (
+      objectName &&
+      Object.keys(objectName).length === 0 &&
+      objectName.constructor === Object
+    );
+  };
+
   useEffect(() => {
+    if (user === null) {
     async function getPostData() {
       try {
         // Get doc with all of the username and photoURL
         const listUsersData = await getListUsernameAndPhotoURL();
 
         // Get doc with count of likes of all posts
+          const count = await getCount();
+          setLikesCount(count[postId]);
 
         // Get post
-        const postData = await getPostById(postId.id);
+          const postData = await getPostById(postId);
 
         // Get date
         const date = new Date(postData.date);
@@ -43,7 +58,10 @@ export default function Post() {
           second: "2-digit",
           hourCycle: "h24",
         };
-        const shortDate = date.toLocaleDateString(undefined, optionsShortDate);
+          const shortDate = date.toLocaleDateString(
+            undefined,
+            optionsShortDate
+          );
         const longDate = date.toLocaleDateString(undefined, optionsLongDate);
 
         let finalPost = {
@@ -52,6 +70,56 @@ export default function Post() {
           photoURL: listUsersData[postData.authorUid].photoURL,
           date: longDate,
         };
+          // set post with definitve data to render
+          setPost(finalPost);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      getPostData();
+    } else if (user.constructor === Object) {
+      if (Object.keys(user).length > 0) {
+        async function getPostData() {
+          try {
+            // Get doc with all of the username and photoURL
+            const listUsersData = await getListUsernameAndPhotoURL();
+
+            // Get doc with count of likes of all posts
+            const count = await getCount();
+            setLikesCount(count[postId]);
+
+            // Get document with likes given by the current user
+            const userGivenLikes = await getUserLikes(user.uid);
+            const checkLiked = userGivenLikes.hasOwnProperty(postId)
+              ? true
+              : false;
+            console.log(checkLiked);
+            setLiked(checkLiked);
+
+            // Get post
+            const postData = await getPostById(postId);
+
+            // Get date
+            const date = new Date(postData.date);
+            const optionsShortDate = { month: "short", day: "numeric" };
+            const optionsLongDate = {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+              second: "2-digit",
+              hourCycle: "h24",
+            };
+            const shortDate = date.toLocaleDateString(
+              undefined,
+              optionsShortDate
+            );
+            const longDate = date.toLocaleDateString(
+              undefined,
+              optionsLongDate
+            );
 
         console.log(finalPost);
         // set post with definitve data to render
@@ -61,7 +129,23 @@ export default function Post() {
       }
     }
     getPostData();
-  }, [postId]);
+      }
+    }
+  }, [postId, user]);
+
+  async function handleLikes() {
+    if (liked) {
+      const newCount = likesCount - 1;
+      // (postId, userUid, typeUpdate)
+      await updateLikesData(postId, user.uid, liked);
+      setLikesCount(newCount);
+    } else {
+      const newCount = likesCount + 1;
+      await updateLikesData(postId, user.uid, liked);
+      setLikesCount(newCount);
+    }
+    setLiked(!liked);
+  }
 
   return (
     <div>
