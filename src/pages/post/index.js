@@ -11,10 +11,13 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 import "pages/post/styles.css";
+import { useUserAuth } from "context/user-auth-context";
 
 export default function Post() {
+  const { user } = useUserAuth();
   const [post, setPost] = useState(false);
-  const postId = useParams();
+  const [liked, setLiked] = useState(undefined);
+  const [likesCount, setLikesCount] = useState(false);
 
   useEffect(() => {
     async function getPostData() {
