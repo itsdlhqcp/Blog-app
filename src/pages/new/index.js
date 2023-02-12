@@ -4,9 +4,9 @@ import Container from "react-bootstrap/Container";
 import "pages/new/styles.css";
 import { useState } from "react";
 import {
-  createPost,
   setPostPhoto,
   downloadPostPhoto,
+  createPostAllData,
 } from "services/firebase/firebase";
 import { useNavigate } from "react-router-dom";
 import uniqid from "uniqid";
@@ -94,15 +94,18 @@ export default function NewPost() {
       comments: 0,
     };
     if (fileImg === undefined) {
-      createPost(newPost.id, newPost)
-        .then(() => setShow(true))
-        .catch(() => setError("Something wrong, try again"));
+      try {
+        await createPostAllData(newPost.id, newPost);
+        setShow(true);
+      } catch (error) {
+        setError("Something wrong, try again");
+      }
     } else {
       setPostPhoto(newPost.id, fileImg).then((res) => {
         if (res) {
           downloadPostPhoto(newPost.id).then((downloadURL) => {
             newPost.img = downloadURL;
-            createPost(newPost.id, newPost)
+            createPostAllData(newPost.id, newPost)
               .then(() => setShow(true))
               .catch(() => setError("Something wrong, try again"));
           });
