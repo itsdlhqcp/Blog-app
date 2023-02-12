@@ -33,43 +33,43 @@ export default function Post() {
 
   useEffect(() => {
     if (user === null) {
-    async function getPostData() {
-      try {
-        // Get doc with all of the username and photoURL
-        const listUsersData = await getListUsernameAndPhotoURL();
+      async function getPostData() {
+        try {
+          // Get doc with all of the username and photoURL
+          const listUsersData = await getListUsernameAndPhotoURL();
 
-        // Get doc with count of likes of all posts
+          // Get doc with count of likes of all posts
           const count = await getCount();
           setLikesCount(count[postId]);
 
-        // Get post
+          // Get post
           const postData = await getPostById(postId);
 
-        // Get date
-        const date = new Date(postData.date);
-        const optionsShortDate = { month: "short", day: "numeric" };
-        const optionsLongDate = {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-          second: "2-digit",
-          hourCycle: "h24",
-        };
+          // Get date
+          const date = new Date(postData.date);
+          const optionsShortDate = { month: "short", day: "numeric" };
+          const optionsLongDate = {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "2-digit",
+            hourCycle: "h24",
+          };
           const shortDate = date.toLocaleDateString(
             undefined,
             optionsShortDate
           );
-        const longDate = date.toLocaleDateString(undefined, optionsLongDate);
+          const longDate = date.toLocaleDateString(undefined, optionsLongDate);
 
-        let finalPost = {
-          ...postData,
-          username: listUsersData[postData.authorUid].username,
-          photoURL: listUsersData[postData.authorUid].photoURL,
-          date: longDate,
-        };
+          let finalPost = {
+            ...postData,
+            username: listUsersData[postData.authorUid].username,
+            photoURL: listUsersData[postData.authorUid].photoURL,
+            date: longDate,
+          };
           // set post with definitve data to render
           setPost(finalPost);
         } catch (error) {
@@ -121,14 +121,14 @@ export default function Post() {
               optionsLongDate
             );
 
-        console.log(finalPost);
-        // set post with definitve data to render
-        setPost(finalPost);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    getPostData();
+            console.log(finalPost);
+            // set post with definitve data to render
+            setPost(finalPost);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+        getPostData();
       }
     }
   }, [postId, user]);
@@ -149,7 +149,7 @@ export default function Post() {
 
   return (
     <div>
-      {post === false ? (
+      {post === false || isObjectEmpty(user) ? (
         <div>Loading</div>
       ) : post.id === undefined ? (
         <Navigate to="/"></Navigate>
