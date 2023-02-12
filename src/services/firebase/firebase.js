@@ -185,6 +185,13 @@ export async function getListUsernameAndPhotoURL() {
       const doc = docSnap.data();
       return doc;
     } else {
+      return {};
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 /* Functions to handle likes */
 export async function getCount() {
   try {
