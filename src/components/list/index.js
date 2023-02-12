@@ -4,6 +4,7 @@ import Col from "react-bootstrap/Col";
 import { Link } from "react-router-dom";
 import Image from "react-bootstrap/Image";
 import "components/list/styles.css";
+import { Heart } from "react-bootstrap-icons";
 
 function ListItem(props) {
   return (
@@ -27,17 +28,17 @@ function ListItem(props) {
             <p>{props.postData.date}</p>
           </Col>
         </Row>
-        <Row className="ms-2">
+        <Row className="ms-2 mb-3">
           <Col>
             <h4>{props.postData.title}</h4>
           </Col>
         </Row>
         <Row xs="auto" className="ms-2">
-          <Col>
-            <p>{props.postData.likes}</p>
+          <Col className="pe-2">
+            <Heart></Heart>
           </Col>
-          <Col>
-            <p>{props.postData.comments}</p>
+          <Col className="ps-0">
+            <p>{props.postData.likes} Likes</p>
           </Col>
         </Row>
         <Link
