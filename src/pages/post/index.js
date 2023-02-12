@@ -16,6 +16,7 @@ import Image from "react-bootstrap/Image";
 import "pages/post/styles.css";
 import { useUserAuth } from "context/user-auth-context";
 import Loading from "components/loading";
+import { Heart } from "react-bootstrap-icons";
 
 export default function Post() {
   const { user } = useUserAuth();
@@ -217,16 +218,20 @@ export default function Post() {
                     }`}
                     onClick={handleLikes}
                   >
-                    <span className=" h-100 p-0 m-0">icon</span>
+                    <span className=" h-100 p-0 m-0">
+                      <Heart></Heart>
+                    </span>
                   </button>
                 ) : (
                   <div className={`button-like m-0 p-0 bg-white`}>
-                    <span className=" h-100 p-0 m-0">icon</span>
+                    <span className=" h-100 p-0 m-0">
+                      <Heart></Heart>
+                    </span>
                   </div>
                 )}
               </Col>
               <Col className="ps-0 my-auto">
-                <p className="my-auto">{likesCount}</p>
+                <p className="my-auto">{likesCount} Likes</p>
               </Col>
             </Row>
           </Container>
