@@ -20,6 +20,8 @@ import {
   setDoc,
   deleteDoc,
   writeBatch,
+  increment,
+  deleteField,
 } from "firebase/firestore";
 
 // Initialize Firebase
@@ -286,5 +288,61 @@ export async function createPostAllData(postId, post) {
     await batch.commit();
   } catch (error) {
     console.error(error.message);
+  }
+}
+
+// Batched firestore Function to update all likes data when user press like button
+export async function updateLikesData(postId, userUid, isLiked) {
+  // Increment
+  if (!isLiked) {
+    try {
+      // Get a new write batch
+      const batch = writeBatch(db);
+
+      // Update the post-like-list of selected post
+      const postLikesRef = doc(db, "post-like-list", postId);
+      batch.update(postLikesRef, { [userUid]: "" });
+
+      // Update the count  of selected post
+      const countRef = doc(db, "post-like-list", "count");
+      batch.update(countRef, { [postId]: increment(1) });
+
+      // update user liked posts doc
+      const userLikedPostsRef = doc(db, "user-liked-posts", userUid);
+      batch.update(userLikedPostsRef, {
+        [postId]: "",
+      });
+
+      // Commit the batch
+      await batch.commit();
+    } catch (error) {
+      console.error(error.message);
+    }
+
+    // Decrement
+  } else {
+    try {
+      // Get a new write batch
+      const batch = writeBatch(db);
+
+      // Update the post-like-list of selected post
+      const postLikesRef = doc(db, "post-like-list", postId);
+      batch.update(postLikesRef, { [userUid]: deleteField() });
+
+      // Update the count  of selected post
+      const countRef = doc(db, "post-like-list", "count");
+      batch.update(countRef, { [postId]: increment(-1) });
+
+      // update user liked posts doc
+      const userLikedPostsRef = doc(db, "user-liked-posts", userUid);
+      batch.update(userLikedPostsRef, {
+        [postId]: deleteField(),
+      });
+
+      // Commit the batch
+      await batch.commit();
+    } catch (error) {
+      console.error(error.message);
+    }
   }
 }
