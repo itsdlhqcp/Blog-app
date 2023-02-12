@@ -13,3 +13,23 @@
   max-width: 400px;
   position: relative;
 }
+
+.button-like {
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  border-width: 2px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  border-style: solid;
+  border-color: var(--bs-gray-500);
+  color: var(--bs-gray-500);
+  position: relative;
+}
+
+.button-like:hover {
+  color: var(--bs-danger);
+  border-color: var(--bs-danger);
+}

@@ -119,11 +119,24 @@ export default function Post() {
               </Col>
             </Row>
             <Row xs="auto" className="ms-2">
-              <Col>
-                <p>{post.likes}</p>
+              <Col className="my-auto pe-1">
+                {user ? (
+                  <button
+                    className={`button-like m-0 p-0 bg-white ${
+                      liked ? "text-danger border-danger" : ""
+                    }`}
+                    onClick={handleLikes}
+                  >
+                    <span className=" h-100 p-0 m-0">icon</span>
+                  </button>
+                ) : (
+                  <div className={`button-like m-0 p-0 bg-white`}>
+                    <span className=" h-100 p-0 m-0">icon</span>
+                  </div>
+                )}
               </Col>
-              <Col>
-                <p>{post.comments}</p>
+              <Col className="ps-0 my-auto">
+                <p className="my-auto">{likesCount}</p>
               </Col>
             </Row>
           </Container>
