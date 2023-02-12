@@ -6,6 +6,7 @@ import {
   getListUsernameAndPhotoURL,
 } from "services/firebase/firebase";
 import { useEffect, useState } from "react";
+import Loading from "components/loading";
 
 export default function Home() {
   const [list, setList] = useState(false);
@@ -61,7 +62,7 @@ export default function Home() {
     <div>
       <Categories></Categories>
       {list === false ? (
-        <div>Loading</div>
+        <Loading></Loading>
       ) : isObjectEmpty(list) ? (
         <div></div>
       ) : (

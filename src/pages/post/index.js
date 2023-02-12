@@ -15,6 +15,7 @@ import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 import "pages/post/styles.css";
 import { useUserAuth } from "context/user-auth-context";
+import Loading from "components/loading";
 
 export default function Post() {
   const { user } = useUserAuth();
@@ -155,7 +156,7 @@ export default function Post() {
   return (
     <div>
       {post === false || isObjectEmpty(user) ? (
-        <div>Loading</div>
+        <Loading></Loading>
       ) : post.id === undefined ? (
         <Navigate to="/"></Navigate>
       ) : (

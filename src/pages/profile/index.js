@@ -12,6 +12,7 @@ import {
   updateUserAllData,
 } from "services/firebase/firebase";
 import ModalNotification from "components/modal-notification/index";
+import Loading from "components/loading";
 
 export default function Profile() {
   const { user, fetchUserData } = useUserAuth();
@@ -191,7 +192,7 @@ export default function Profile() {
   return (
     <div>
       {username === undefined || src === undefined || title === undefined ? (
-        <div>Loading</div>
+        <Loading></Loading>
       ) : (
         <>
           <ModalNotification
