@@ -224,6 +224,23 @@ export async function getUserLikes(userUid) {
     console.error(error);
   }
 }
+
+export async function getPostLikeList(id) {
+  try {
+    const collectionRef = collection(db, "post-like-list");
+    const docRef = doc(collectionRef, id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const doc = docSnap.data();
+      return doc;
+    } else {
+      return undefined;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 // Batched firestore Function to create all necessary user data
 export async function createUserAllData(userUid, user) {
   try {
