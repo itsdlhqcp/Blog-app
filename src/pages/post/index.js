@@ -206,7 +206,7 @@ export default function Post() {
 
             <Row>
               <Col>
-                <p>{post.textBody}</p>
+                <p className="post-text-body">{post.textBody}</p>
               </Col>
             </Row>
             <Row xs="auto" className="ms-2">

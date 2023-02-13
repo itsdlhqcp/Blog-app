@@ -33,3 +33,7 @@
   color: var(--bs-danger);
   border-color: var(--bs-danger);
 }
+
+.post-text-body {
+  white-space: pre-wrap;
+}
