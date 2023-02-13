@@ -30,22 +30,29 @@ export default function Home() {
 
         // Get posts
         const postsData = await getPosts();
-        let finalList = postsData.map((post) => {
-          console.log(post.authorUid);
-          // Get short date
-          const date = new Date(post.date);
-          const options = { month: "short", day: "numeric" };
+        let finalList = postsData
+          .sort((a, b) => {
+            const dateA = new Date(a.date).getTime();
+            const dateB = new Date(b.date).getTime();
+            return dateB - dateA;
+          })
+          .map((post) => {
+            console.log(post.authorUid);
+            // Get short date
+            const date = new Date(post.date);
+            const options = { month: "short", day: "numeric" };
 
-          return {
-            ...post,
-            username: listUsersData[post.authorUid].username,
-            photoURL: listUsersData[post.authorUid].photoURL,
-            date: date.toLocaleDateString(undefined, options),
-            likes: count[post.id],
-          };
-        });
+            return {
+              ...post,
+              username: listUsersData[post.authorUid].username,
+              photoURL: listUsersData[post.authorUid].photoURL,
+              date: date.toLocaleDateString(undefined, options),
+              likes: count[post.id],
+            };
+          })
+          .sort((a, b) => b.likes - a.likes);
 
-        console.log(finalList);
+        //console.log(finalList);
         // set List with definitve data to render in List component
         setList(finalList);
       } catch (error) {
