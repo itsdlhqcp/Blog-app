@@ -1,0 +1,12 @@
+.bg-dark.footer.container {
+  color: #9a9c9e;
+}
+
+.footer-social-links {
+  text-decoration: none;
+  color: #9a9c9e;
+}
+
+.footer-social-links:hover {
+  color: var(--bs-gray-500);
+}
