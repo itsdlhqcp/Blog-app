@@ -10,6 +10,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "app.css";
 import { UserAuthContextProvider } from "context/user-auth-context";
 import ProtectedRoute from "components/protected-route";
+import Footer from "components/footer";
 
 function App() {
   return (
@@ -42,6 +43,9 @@ function App() {
             <Route path="/post/:id" element={<Post />} />
             <Route path="*" element={<ErrorPage />} />
           </Routes>
+        </div>
+        <div className="app__container-footer bg-dark">
+          <Footer></Footer>
         </div>
       </UserAuthContextProvider>
     </div>
