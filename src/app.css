@@ -2,3 +2,7 @@
   min-height: 100vh;
   position: relative;
 }
+
+.app__container-page {
+  min-height: 100vh;
+}
