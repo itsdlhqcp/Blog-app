@@ -5,6 +5,7 @@ import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
 import "components/profile-form/styles.css";
 import Image from "react-bootstrap/Image";
+import Spinner from "react-bootstrap/Spinner";
 import userDefaultIcon from "assets/svg/abstract-user-flat-3.svg";
 
 export default function ProfileForm({
@@ -80,7 +81,20 @@ export default function ProfileForm({
             onClick={handleSubmit}
             disabled={isDisabled}
           >
-            Save changes
+            {isDisabled ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />{" "}
+                Loading...
+              </>
+            ) : (
+              <>Save changes</>
+            )}
           </Button>
         </Col>
       </Row>
