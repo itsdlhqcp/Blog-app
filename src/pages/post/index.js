@@ -37,15 +37,19 @@ export default function Post() {
     if (user === null) {
       async function getPostData() {
         try {
+          // Get post
+          const postData = await getPostById(postId);
+          if (!postData) {
+            setPost({});
+            return;
+          }
+
           // Get doc with all of the username and photoURL
           const listUsersData = await getListUsernameAndPhotoURL();
 
           // Get doc with count of likes of all posts
           const count = await getCount();
           setLikesCount(count[postId]);
-
-          // Get post
-          const postData = await getPostById(postId);
 
           // Get date
           const date = new Date(postData.date);
@@ -83,6 +87,13 @@ export default function Post() {
       if (Object.keys(user).length > 0) {
         async function getPostData() {
           try {
+            // Get post
+            const postData = await getPostById(postId);
+            if (!postData) {
+              setPost({});
+              return;
+            }
+
             // Get doc with all of the username and photoURL
             const listUsersData = await getListUsernameAndPhotoURL();
 
@@ -97,9 +108,6 @@ export default function Post() {
               : false;
             console.log(checkLiked);
             setLiked(checkLiked);
-
-            // Get post
-            const postData = await getPostById(postId);
 
             // Get date
             const date = new Date(postData.date);
