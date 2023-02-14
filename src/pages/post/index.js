@@ -7,8 +7,10 @@ import {
   getCount,
   getUserLikes,
   updateLikesData,
+  deletePostAllData,
+  deletePostStarageImage,
 } from "services/firebase/firebase";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
@@ -17,12 +19,19 @@ import "pages/post/styles.css";
 import { useUserAuth } from "context/user-auth-context";
 import Loading from "components/loading";
 import { Heart } from "react-bootstrap-icons";
+import ModalNotification from "components/modal-notification";
+import ModalConfirmation from "components/modal-confirmation";
+import Button from "react-bootstrap/Button";
 
 export default function Post() {
   const { user } = useUserAuth();
   const [post, setPost] = useState(false);
   const [liked, setLiked] = useState(undefined);
   const [likesCount, setLikesCount] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDeleteConfirmModal, SetShowDeleteConfirmModal] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
+  const navigate = useNavigate();
 
   const postId = useParams().id;
   const isObjectEmpty = (objectName) => {
@@ -162,6 +171,28 @@ export default function Post() {
     setLiked(!liked);
   }
 
+  async function handleDelete() {
+    SetShowDeleteConfirmModal(true);
+  }
+
+  function handleCloseDeleteModal() {
+    setShowDeleteModal(false);
+    navigate("/");
+  }
+  async function handleConfimrationDelete() {
+    SetShowDeleteConfirmModal(false);
+    setIsDelete(true);
+    try {
+      await deletePostAllData(postId);
+      await deletePostStarageImage(postId);
+      setShowDeleteModal(true);
+      setIsDelete(false);
+    } catch (error) {
+      console.error(error.message);
+      setIsDelete(false);
+    }
+  }
+
   return (
     <div>
       {post === false || isObjectEmpty(user) ? (
@@ -171,12 +202,39 @@ export default function Post() {
       ) : (
         <div className="post">
           <Container className="bg-white p-3 post-container">
+            <ModalNotification
+              show={showDeleteModal}
+              setShow={setShowDeleteModal}
+              handleClose={handleCloseDeleteModal}
+              modalTitle={"Deleted"}
+              modalText={`The post was deleted successfully`}
+            ></ModalNotification>
+            <ModalConfirmation
+              show={showDeleteConfirmModal}
+              setShow={SetShowDeleteConfirmModal}
+              handleConfirmation={handleConfimrationDelete}
+              modalTitle={"Delete?"}
+              modalText={`Are you sure you want to delete this post?`}
+            ></ModalConfirmation>
+            {user.uid === post.authorUid && (
+              <Row xs="auto" className="ms-1">
+                <Col className="my-auto ms-auto">
+                  <Button
+                    disabled={isDelete}
+                    className={``}
+                    variant="danger"
+                    onClick={handleDelete}
+                  >
+                    <span className=" h-100 p-0 m-0">Delete</span>
+                  </Button>
+                </Col>
+              </Row>
+            )}
             <Row>
               <Col>
                 <h1 className="text-center">{post.title}</h1>
               </Col>
             </Row>
-
             <Row xs={2} sm={2}>
               <Col className="p-0 m-0 col-container-img" sm="auto" xs="auto">
                 <Image
@@ -190,13 +248,11 @@ export default function Post() {
                 <p className="my-0">{post.username}</p>
               </Col>
             </Row>
-
             <Row>
               <Col>
                 <p>{post.date}</p>
               </Col>
             </Row>
-
             {/* hero */}
             {post.img && (
               <Row className="mx-auto my-3">
@@ -211,7 +267,6 @@ export default function Post() {
                 </Col>
               </Row>
             )}
-
             <Row>
               <Col>
                 <p className="post-text-body">{post.textBody}</p>
