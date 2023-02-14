@@ -43,12 +43,20 @@ export default function Profile() {
       setShow(true);
       setIsUpdated(false);
       setIsDisabled(false);
+      if (inputRef.current) {
+        inputRef.current.value = null;
+        SetFileImg(undefined);
+      }
     }
 
     if (error) {
       setSrc(() => user.photoURL);
       setUsername(user.username);
       setIsDisabled(false);
+      if (inputRef.current) {
+        inputRef.current.value = null;
+        SetFileImg(undefined);
+      }
     }
   }, [handleSubmit && isUpdated, handleSubmit && error !== ""]);
 
