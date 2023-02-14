@@ -42,13 +42,13 @@ export default function Profile() {
       updated();
       setShow(true);
       setIsUpdated(false);
-      if (inputRef.current) inputRef.current.value = null;
+      setIsDisabled(false);
     }
 
     if (error) {
       setSrc(() => user.photoURL);
       setUsername(user.username);
-      if (inputRef.current) inputRef.current.value = null;
+      setIsDisabled(false);
     }
   }, [handleSubmit && isUpdated, handleSubmit && error !== ""]);
 
@@ -128,7 +128,6 @@ export default function Profile() {
           );
         }
       });
-      setIsDisabled(false);
       return;
     }
 
