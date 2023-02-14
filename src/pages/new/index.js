@@ -123,8 +123,8 @@ export default function NewPost() {
           show={show}
           setShow={setShow}
           handleClose={handleClose}
-          modalTitle={"Profile updated"}
-          modalText={"The profile has been successfully updated"}
+          modalTitle={"Post created"}
+          modalText={"The post has been successfully created"}
         ></ModalNotification>
         {error && <Alert variant="danger">{error}</Alert>}
         <PostForm
