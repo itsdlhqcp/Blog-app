@@ -7,6 +7,7 @@ import {
   uploadBytes,
   getDownloadURL,
   getBytes,
+  deleteObject,
 } from "firebase/storage";
 import {
   getFirestore,
@@ -384,4 +385,45 @@ export async function updateLikesData(postId, userUid, isLiked) {
       console.error(error.message);
     }
   }
+}
+
+// Batched firestore Function to delete all related post data when author deletes his own post
+export async function deletePostAllData(postId) {
+  // Get a new write batch
+  const batch = writeBatch(db);
+
+  const q = query(collection(db, "user-liked-posts"), where(postId, "==", ""));
+
+  const querySnapshot = await getDocs(q);
+
+  if (querySnapshot.metadata.fromCache) {
+    await Promise.reject(Error("Something wrong, check your conection"));
+  }
+  if (querySnapshot.size > 0) {
+    querySnapshot.forEach((doc) => {
+      batch.update(doc.ref, {
+        [postId]: deleteField(),
+      });
+    });
+  }
+
+  // Delete the selected doc from post-like-list
+  const postLikesRef = doc(db, "post-like-list", postId);
+  batch.delete(postLikesRef);
+
+  // Update the count without the selected post
+  const countRef = doc(db, "post-like-list", "count");
+  batch.update(countRef, { [postId]: deleteField() });
+
+  // Delete the selected post from posts collection
+  const postRef = doc(db, "posts", postId);
+  batch.delete(postRef);
+
+  // Commit the batch
+  await batch.commit();
+}
+
+export async function deletePostStarageImage(postId) {
+  const postPhotoRef = ref(storage, `images/posts/${postId}`);
+  deleteObject(postPhotoRef);
 }
