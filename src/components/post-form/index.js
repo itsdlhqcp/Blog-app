@@ -4,6 +4,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
 import Image from "react-bootstrap/Image";
+import Spinner from "react-bootstrap/Spinner";
 import "components/post-form/styles.css";
 
 export default function PostForm({
@@ -14,6 +15,7 @@ export default function PostForm({
   handleSubmit,
   title,
   textBody,
+  isDisabled,
 }) {
   // To make a textarea autoresize
   function handleKeyDown(e) {
@@ -94,8 +96,21 @@ export default function PostForm({
             required
           />
         </Form.Group>
-        <Button variant="primary" type="submit">
-          Submit
+        <Button variant="primary" type="submit" disabled={isDisabled}>
+          {isDisabled ? (
+            <>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />{" "}
+              Loading...
+            </>
+          ) : (
+            <>Submit</>
+          )}
         </Button>
       </Form>
     </>
