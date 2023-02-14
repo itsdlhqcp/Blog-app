@@ -49,6 +49,7 @@ export default function NewPost() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+
     setError("");
     // Offline error
     if (!navigator.onLine) {
@@ -80,7 +81,7 @@ export default function NewPost() {
       setError("The text content must have a minimum of 30 characters");
       return;
     }
-
+    setIsDisabled(true);
     const postDate = new Date().toString();
     const id = uniqid();
     let newPost = {
@@ -95,8 +96,10 @@ export default function NewPost() {
       try {
         await createPostAllData(newPost.id, newPost);
         setShow(true);
+        setIsDisabled(false);
       } catch (error) {
         setError("Something wrong, try again");
+        setIsDisabled(false);
       }
     } else {
       setPostPhoto(newPost.id, fileImg).then((res) => {
@@ -104,13 +107,20 @@ export default function NewPost() {
           downloadPostPhoto(newPost.id).then((downloadURL) => {
             newPost.img = downloadURL;
             createPostAllData(newPost.id, newPost)
-              .then(() => setShow(true))
-              .catch(() => setError("Something wrong, try again"));
+              .then(() => {
+                setShow(true);
+                setIsDisabled(false);
+              })
+              .catch(() => {
+                setError("Something wrong, try again");
+                setIsDisabled(false);
+              });
           });
         } else {
           setError(
             "Something wrong, the image must be less than 1mb and must be png, svg or jpg"
           );
+          setIsDisabled(false);
         }
       });
     }
