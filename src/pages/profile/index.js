@@ -119,7 +119,7 @@ export default function Profile() {
               console.log("File available at", downloadURL);
               updateUserAllData(user.uid, {
                 uid: user.uid,
-                username: username,
+                username: username.trim(),
                 photoURL: downloadURL,
               })
                 .then(() => {
@@ -148,7 +148,7 @@ export default function Profile() {
       try {
         await updateUserAllData(user.uid, {
           uid: user.uid,
-          username: username,
+          username: username.trim(),
           photoURL: user.photoURL,
         });
         setIsUpdated(true);
@@ -174,7 +174,7 @@ export default function Profile() {
             .then((downloadURL) => {
               updateUserAllData(user.uid, {
                 uid: user.uid,
-                username: username,
+                username: username.trim(),
                 photoURL: downloadURL,
               })
                 .then(() => {
