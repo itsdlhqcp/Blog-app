@@ -15,7 +15,7 @@ export default function ModalConfirmation({
     <>
       <Modal
         show={show}
-        onHide={handleConfirmation}
+        onHide={hanldeCancel}
         backdrop="static"
         keyboard={false}
       >
