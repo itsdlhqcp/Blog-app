@@ -1,6 +1,7 @@
 .app {
   min-height: 100vh;
   position: relative;
+  overflow-wrap: break-word;
 }
 
 .app__container-page {
