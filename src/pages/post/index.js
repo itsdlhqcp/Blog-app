@@ -22,6 +22,7 @@ import { Heart } from "react-bootstrap-icons";
 import ModalNotification from "components/modal-notification";
 import ModalConfirmation from "components/modal-confirmation";
 import Button from "react-bootstrap/Button";
+import Spinner from "react-bootstrap/Spinner";
 
 export default function Post() {
   const { user } = useUserAuth();
@@ -225,7 +226,22 @@ export default function Post() {
                     variant="danger"
                     onClick={handleDelete}
                   >
-                    <span className=" h-100 p-0 m-0">Delete</span>
+                    {isDelete ? (
+                      <>
+                        <Spinner
+                          as="span"
+                          animation="border"
+                          size="sm"
+                          role="status"
+                          aria-hidden="true"
+                        />{" "}
+                        Loading...
+                      </>
+                    ) : (
+                      <>
+                        <span className=" h-100 p-0 m-0">Delete</span>
+                      </>
+                    )}
                   </Button>
                 </Col>
               </Row>
