@@ -11,7 +11,7 @@ function ListItem(props) {
     <div>
       <Container className=" bg-white p-3 my-2 shadow-sm border position-relative">
         <Row xs={2} sm={2}>
-          <Col className="p-0 m-0" sm="auto" xs="auto">
+          <Col className="my-auto" xs="2" sm="1">
             <Image
               className="diferent-size"
               src={props.postData.photoURL}
@@ -19,7 +19,7 @@ function ListItem(props) {
               roundedCircle
             ></Image>
           </Col>
-          <Col className="my-auto">
+          <Col className="my-auto" xs="10" sm="11">
             <p className="my-0">{props.postData.username}</p>
           </Col>
         </Row>
