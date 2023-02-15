@@ -185,7 +185,9 @@ export default function Post() {
     setIsDelete(true);
     try {
       await deletePostAllData(postId);
-      await deletePostStarageImage(postId);
+      if (post.img) {
+        await deletePostStarageImage(postId);
+      }
       setShowDeleteModal(true);
       setIsDelete(false);
     } catch (error) {
