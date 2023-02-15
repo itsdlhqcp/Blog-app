@@ -36,8 +36,10 @@ export default function ProfileForm({
                 value={username}
                 onChange={handleChangeUsername}
                 name="username"
+                maxLength="70"
               />
             </InputGroup>
+            <Form.Text className="text-muted">Max 70 characters</Form.Text>
           </Form.Group>
         </Col>
       </Row>
