@@ -81,7 +81,7 @@ export default function Profile() {
     e.preventDefault();
     setIsDisabled(true);
     setError("");
-    if (username === "") {
+    if (username.trim() === "") {
       setError("Add a valid username");
       setIsDisabled(false);
       return;
