@@ -28,7 +28,6 @@ export default function Profile() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    console.log(user);
     setTitle(user.username);
     setUsername(user.username);
     setSrc(user.photoURL);
@@ -116,7 +115,6 @@ export default function Profile() {
         if (res) {
           downloadUserProfilePhoto(user.uid)
             .then((downloadURL) => {
-              console.log("File available at", downloadURL);
               updateUserAllData(user.uid, {
                 uid: user.uid,
                 username: username.trim(),

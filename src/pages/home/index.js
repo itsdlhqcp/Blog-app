@@ -37,7 +37,6 @@ export default function Home() {
             return dateB - dateA;
           })
           .map((post) => {
-            console.log(post.authorUid);
             // Get short date
             const date = new Date(post.date);
             const options = { month: "short", day: "numeric" };
@@ -52,7 +51,6 @@ export default function Home() {
           })
           .sort((a, b) => b.likes - a.likes);
 
-        //console.log(finalList);
         // set List with definitve data to render in List component
         setList(finalList);
       } catch (error) {
@@ -62,9 +60,6 @@ export default function Home() {
     getPostsData();
   }, []);
 
-  useEffect(() => {
-    console.log(list);
-  });
   return (
     <div>
       <Categories></Categories>

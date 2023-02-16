@@ -116,7 +116,7 @@ export default function Post() {
             const checkLiked = userGivenLikes.hasOwnProperty(postId)
               ? true
               : false;
-            console.log(checkLiked);
+
             setLiked(checkLiked);
 
             // Get date
@@ -146,7 +146,7 @@ export default function Post() {
               photoURL: listUsersData[postData.authorUid].photoURL,
               date: longDate,
             };
-            console.log(finalPost);
+
             // set post with definitve data to render
             setPost(finalPost);
           } catch (error) {

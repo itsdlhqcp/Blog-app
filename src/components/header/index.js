@@ -19,11 +19,6 @@ export default function Header() {
     e.preventDefault();
     try {
       const userCredential = await signInWithGoogle();
-      console.log(
-        userCredential.user.uid,
-        userCredential.user.displayName,
-        userCredential.user.photoURL
-      );
       const uid = userCredential.user.uid;
       const photoURL = userCredential.user.photoURL;
       const username = userCredential.user.displayName;
@@ -43,7 +38,6 @@ export default function Header() {
           while (isUsernameTaken) {
             count++;
             tempUsername = username + count;
-            console.log(tempUsername);
             isUsernameTaken = await existUsername(tempUsername);
           }
           newUser = {
@@ -70,7 +64,7 @@ export default function Header() {
       }
       setShowLoginModal(true);
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
     }
   }
   async function handleLogOut(e) {
@@ -80,7 +74,7 @@ export default function Header() {
       navigate("/");
       setShowLogoutModal(true);
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
     }
   }
 

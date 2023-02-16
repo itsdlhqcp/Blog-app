@@ -60,7 +60,7 @@ export default function NewPost() {
     // Empty title error
     if (title.trim() === "") {
       setError("Title can't be blank");
-      console.log(uniqid(title.trim()));
+
       return;
     }
 

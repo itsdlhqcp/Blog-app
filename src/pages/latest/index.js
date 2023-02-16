@@ -37,7 +37,6 @@ export default function Latest() {
             return dateB - dateA;
           })
           .map((post) => {
-            console.log(post.authorUid);
             // Get short date
             const date = new Date(post.date);
             const options = { month: "short", day: "numeric" };
@@ -60,9 +59,6 @@ export default function Latest() {
     getPostsData();
   }, []);
 
-  useEffect(() => {
-    console.log(list);
-  });
   return (
     <div>
       <Categories></Categories>

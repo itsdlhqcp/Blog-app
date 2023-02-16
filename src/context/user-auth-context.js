@@ -38,7 +38,6 @@ export function UserAuthContextProvider({ children }) {
         fetchUserData(currentuser.uid);
       } else {
         setUser(currentuser);
-        console.log(currentuser);
       }
     });
 
