@@ -219,7 +219,7 @@ export default function Post() {
               modalTitle={"Delete?"}
               modalText={`Are you sure you want to delete this post?`}
             ></ModalConfirmation>
-            {user.uid === post.authorUid && (
+            {user !== null && user.uid === post.authorUid && (
               <Row xs="auto" className="ms-1">
                 <Col className="my-auto ms-auto">
                   <Button
