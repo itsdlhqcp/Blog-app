@@ -1,70 +1,144 @@
-# Getting Started with Create React App
+# Blog Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+#### A react application developed using React and Firebase with many features such as - No login: Only view blogs posted by the community | Login: View, post your own blogs, like, set your profile picture and username, update your profile information and delete your own blogs.
 
-## Available Scripts
+## [See live demo](https://firebase-blog-app1.netlify.app/) 🖥️
 
-In the project directory, you can run:
+### Getting started
 
-### `npm start`
+```
+git clone git@github.com:Luise8/blog-app.git
+cd blog-app
+npm install
+npm start
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Also there are five firestore collections that you have to create:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- `post-like-list/postId, count` // postid: List of users who have liked this post. count: This document has a summary with only postId and number of likes.
+- `posts/postId` // Post doc.
+- `public/listUsernameAndPhotoURL` // The document containing public users profile data, for now username and photoURL
+- `user-liked-posts/userUid` // The list of posts that this user has liked.
+- `users/userUid` // User doc.
 
-### `npm test`
+And there is one storage bucket to images that you have to create:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- `images/posts/postId` // Hero image.
+- `images/profile/userUid` // Profile image.
 
-### `npm run build`
+##### Rules to Storage images
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+      // Rules to user
+      match /images/profile/{imageId} {
+      allow read: if request.auth != null
+      		&& request.auth.uid == imageId;  // Owner
+     // Allow to create files subject to the constraints:
+     // User auth
+     // Restrict to the authenticated owner of the content only
+     // File is less than 1MB
+     // Content type is an image
+     allow create: if request.auth != null
+                   && request.auth.uid == imageId  // Owner
+                   && request.resource.size < 1 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
 
-### `npm run eject`
+     // Allow to update files subject to the constraints:
+     // User auth
+     // Restrict to the authenticated owner of the content only
+     // File is less than 1MB
+     // Content type is an image
+     // Uploaded content type matches existing content type
+      allow update: if request.auth != null
+                   && request.auth.uid == imageId  // Owner
+                   && request.resource.size < 1 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*')
+                   && request.resource.contentType == resource.contentType
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+    }
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+     // Rules to posts
+     match /images/posts/{post} {
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+     // Allow public read access
+     allow read: if true;
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+     // Allow to create files subject to the constraints:
+     // User auth
+     // File is less than 1MB
+     // Content type is an image
+      allow create: if request.auth != null
+                   && request.resource.size < 1 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
 
-## Learn More
+     // Allow to delete files to the authenticated user
+     allow delete: if request.auth != null
+    }
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+##### Firestore rules
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
 
-### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+    match /users/{ids=**} {
+	allow read: if request.auth != null
+	match /{id} {
+	        allow write: if request.auth != null && request.auth.uid == id
+  	}
+     }
 
-### Making a Progressive Web App
+    // Allow public read access, but only content owners can write
+    match /posts/{post} {
+        allow read: if true
+        allow create: if request.auth != null && request.auth.uid == request.resource.data.authorUid && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        allow delete: if request.auth != null && request.auth.uid == resource.data.authorUid && exists(/databases/$(database)/documents/users/$(request.auth.uid))
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+    }
 
-### Advanced Configuration
+    match /post-like-list {
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+	// Allow public to read access, but only logged user can write
+    	match /count {
+	        allow read: if true;
+                allow write: if request.auth != null && existsAfter(/databases/$(database)/documents/users/$(request.auth.uid));
+    		}
 
-### Deployment
+  	// Allow public to read access, but only logged user can write
+    	match /{post} {
+	        allow read: if true;
+                allow create: if request.auth != null && existsAfter(/databases/$(database)/documents/posts/$(post));
+                allow update: if request.auth != null && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+                allow delete: if request.auth != null && get(/databases/$(database)/documents/posts/$(post)).data.authorUid == request.auth.uid && existsAfter(/databases/$(database)/documents/posts/$(post)) == false;
+    	}
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+    }
 
-### `npm run build` fails to minify
+    // Allow the logged users to read and update, because when a post author deletes his own post,
+    // the like list of each user who liked this post must be updated to remove this post
+    // from those lists.
+    match /user-liked-posts/{userId} {
+        allow read, update: if request.auth != null && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+        // Only owner can create
+        allow create: if request.auth != null && existsAfter(/databases/$(database)/documents/users/$(request.auth.uid))
+    }
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+    // Allow public read access, but only logged user can write
+    match /public/listUsernameAndPhotoURL {
+	allow read: if true
+        allow write: if request.auth != null && existsAfter(/databases/$(database)/documents/users/$(request.auth.uid))
+    }
+  }
+}
+```
+
