@@ -3,10 +3,21 @@
 }
 
 .footer-social-links {
+  position: relative;
   text-decoration: none;
   color: #9a9c9e;
 }
 
 .footer-social-links:hover {
   color: var(--bs-gray-500);
+}
+
+.footer-social-links:hover img {
+  opacity: 1;
+}
+.footer-social-links img {
+  width: 16px;
+  height: 16px;
+  opacity: 0.8;
+  transition: opacity 0.5;
 }

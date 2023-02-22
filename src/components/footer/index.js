@@ -5,6 +5,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Row from "react-bootstrap/Row";
 import { Github, Linkedin } from "react-bootstrap-icons";
 import "components/footer/styles.css";
+import myLogo from "assets/brand/my-website-logo.png";
 
 export default function Footer() {
   return (
@@ -20,6 +21,16 @@ export default function Footer() {
               rel="noopener noreferrer"
             >
               Luis E. Gamez
+            </a>
+          </Col>
+          <Col xs="auto">
+            <a
+              className="footer-social-links"
+              href="https://luisegamez.netlify.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src={myLogo} alt="Url to my website" />
             </a>
           </Col>
           <Col xs="auto">
