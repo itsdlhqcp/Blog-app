@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+
+    match /users/{ids=**} {
+	allow read: if request.auth != null
+	match /{id} {
+	        allow write: if request.auth != null && request.auth.uid == id
+  	}
+     }
+
+    // Allow public read access, but only content owners can write
+    match /posts/{post} {
+        allow read: if true
+        allow create: if request.auth != null && request.auth.uid == request.resource.data.authorUid && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        allow delete: if request.auth != null && request.auth.uid == resource.data.authorUid && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+
+    }
+
+    match /post-like-list {
+
+	// Allow public to read access, but only logged user can write
+    	match /count {
+	        allow read: if true;
+                allow write: if request.auth != null && existsAfter(/databases/$(database)/documents/users/$(request.auth.uid));
+    		}
+
+  	// Allow public to read access, but only logged user can write
+    	match /{post} {
+	        allow read: if true;
+                allow create: if request.auth != null && existsAfter(/databases/$(database)/documents/posts/$(post));
+                allow update: if request.auth != null && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+                allow delete: if request.auth != null && get(/databases/$(database)/documents/posts/$(post)).data.authorUid == request.auth.uid && existsAfter(/databases/$(database)/documents/posts/$(post)) == false;
+    	}
+
+    }
+
+    // Allow the logged users to read and update, because when a post author deletes his own post,
+    // the like list of each user who liked this post must be updated to remove this post
+    // from those lists.
+    match /user-liked-posts/{userId} {
+        allow read, update: if request.auth != null && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+        // Only owner can create
+        allow create: if request.auth != null && existsAfter(/databases/$(database)/documents/users/$(request.auth.uid))
+    }
+
+    // Allow public read access, but only logged user can write
+    match /public/listUsernameAndPhotoURL {
+	allow read: if true
+        allow write: if request.auth != null && existsAfter(/databases/$(database)/documents/users/$(request.auth.uid))
+    }
+  }
+}

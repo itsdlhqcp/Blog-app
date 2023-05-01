@@ -1,0 +1,50 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+     // Rules to user
+      match /images/profile/{imageId} {
+      allow read: if request.auth != null
+      		&& request.auth.uid == imageId;  // Owner
+     // Allow to create files subject to the constraints:
+     // User auth
+     // Restrict to the authenticated owner of the content only
+     // File is less than 1MB
+     // Content type is an image
+     allow create: if request.auth != null
+                   && request.auth.uid == imageId  // Owner
+                   && request.resource.size < 1 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+
+     // Allow to update files subject to the constraints:
+     // User auth
+     // Restrict to the authenticated owner of the content only
+     // File is less than 1MB
+     // Content type is an image
+     // Uploaded content type matches existing content type
+      allow update: if request.auth != null
+                   && request.auth.uid == imageId  // Owner
+                   && request.resource.size < 1 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*')
+                   && request.resource.contentType == resource.contentType
+
+    }
+
+     // Rules to posts
+     match /images/posts/{post} {
+
+     // Allow public read access
+     allow read: if true;
+
+     // Allow to create files subject to the constraints:
+     // User auth
+     // File is less than 1MB
+     // Content type is an image
+      allow create: if request.auth != null
+                   && request.resource.size < 1 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+
+     // Allow to delete files to the authenticated user
+     allow delete: if request.auth != null
+    }
+  }
+}
